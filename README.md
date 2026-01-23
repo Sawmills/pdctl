@@ -53,12 +53,21 @@ pdctl [--json] <command>
 #### On-Call & Schedules
 - `pdctl oncall list`: List current on-call users.
   - Options: `--schedule`, `--limit`.
+- `pdctl schedule list`: List all schedules.
 - `pdctl schedule view <id>`: View schedule details.
 
 #### Services
 - `pdctl service list`: List services.
   - Options: `--limit`.
 - `pdctl service status`: Show service status summary.
+
+#### Users
+- `pdctl user list`: List users.
+  - Options: `--limit`.
+
+#### Escalation Policies
+- `pdctl ep list`: List escalation policies.
+  - Options: `--limit`.
 
 ### JSON Output
 
@@ -70,7 +79,7 @@ pdctl --json incident list
 
 ## Shell Completion
 
-Generate shell completions for your preferred shell:
+Generate shell completions for your preferred shell. The Zsh completions include dynamic completion for IDs (incidents, services, schedules, users, escalation policies) that fetch real data from your PagerDuty account.
 
 ### Bash
 ```bash
@@ -86,3 +95,11 @@ pdctl completion zsh > /usr/local/share/zsh/site-functions/_pdctl
 ```bash
 pdctl completion fish > ~/.config/fish/completions/pdctl.fish
 ```
+
+### Dynamic Completions (Zsh)
+
+With Zsh completions installed, you can tab-complete:
+- Incident IDs: `pdctl incident view <TAB>` shows recent incidents with titles
+- Service IDs: `pdctl incident list --service=<TAB>` shows available services  
+- Schedule IDs: `pdctl schedule view <TAB>` or `pdctl oncall list --schedule=<TAB>`
+- User/Policy IDs: `pdctl incident reassign <id> --to=<TAB>` shows users and escalation policies

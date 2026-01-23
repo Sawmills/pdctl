@@ -199,3 +199,72 @@ pub struct ServicesResponse {
     pub offset: u32,
     pub more: bool,
 }
+
+// Schedules list response
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
+pub struct SchedulesResponse {
+    pub schedules: Vec<ScheduleSummary>,
+    pub limit: u32,
+    pub offset: u32,
+    pub more: bool,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ScheduleSummary {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub description: Option<String>,
+    #[serde(default)]
+    pub time_zone: Option<String>,
+}
+
+// Users list response
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
+pub struct UsersResponse {
+    pub users: Vec<User>,
+    pub limit: u32,
+    pub offset: u32,
+    pub more: bool,
+}
+
+// Escalation Policies
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct EscalationPolicy {
+    pub id: String,
+    pub name: String,
+    #[serde(default)]
+    pub description: Option<String>,
+    #[serde(default)]
+    pub num_loops: Option<u32>,
+    #[serde(default)]
+    pub escalation_rules: Vec<EscalationRule>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct EscalationRule {
+    pub id: String,
+    pub escalation_delay_in_minutes: u32,
+    #[serde(default)]
+    pub targets: Vec<EscalationTarget>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct EscalationTarget {
+    pub id: String,
+    #[serde(rename = "type")]
+    pub target_type: String,
+    #[serde(default)]
+    pub summary: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
+pub struct EscalationPoliciesResponse {
+    pub escalation_policies: Vec<EscalationPolicy>,
+    pub limit: u32,
+    pub offset: u32,
+    pub more: bool,
+}

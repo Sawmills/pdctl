@@ -1,7 +1,48 @@
 use crate::client::PagerDutyClient;
-use crate::models::Schedule;
+use crate::models::{Schedule, ScheduleSummary};
 use crate::table;
 use anyhow::Result;
+
+pub async fn list(json: bool, limit: u32) -> Result<()> {
+    let client = PagerDutyClient::new()?;
+    let response = client.list_schedules(limit, 0).await?;
+
+    if json {
+        println!("{}", serde_json::to_string_pretty(&response.schedules)?);
+    } else {
+        print_schedule_list(&response.schedules);
+    }
+
+    Ok(())
+}
+
+fn print_schedule_list(schedules: &[ScheduleSummary]) {
+    if schedules.is_empty() {
+        println!("No schedules found.");
+        return;
+    }
+
+    let mut table = table::new();
+    table.set_header(vec!["ID", "Name", "Time Zone", "Description"]);
+
+    for schedule in schedules {
+        table.add_row(vec![
+            &schedule.id,
+            &schedule.name,
+            schedule.time_zone.as_deref().unwrap_or("N/A"),
+            schedule
+                .description
+                .as_deref()
+                .unwrap_or("")
+                .chars()
+                .take(40)
+                .collect::<String>()
+                .as_str(),
+        ]);
+    }
+
+    println!("{table}");
+}
 
 pub async fn view(json: bool, id: &str) -> Result<()> {
     let client = PagerDutyClient::new()?;

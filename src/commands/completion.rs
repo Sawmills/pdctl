@@ -12,36 +12,51 @@ pub fn run(shell: Shell) {
             let completion = String::from_utf8(buf).unwrap();
 
             let custom_functions = r#"
-# Dynamic completion for incident IDs
 _pdctl_incident_ids() {
     local -a incidents
-    if incidents=(${(f)"$(pdctl --json incident list --limit 20 2>/dev/null | jq -r '.[] | "\(.id):\(.title[0:40])"' 2>/dev/null)"}); then
+    if incidents=(${(f)"$(pdctl --json incident list --limit 20 2>/dev/null | jq -r '.[] | "\(.id):\(.title[0:50])"' 2>/dev/null)"}); then
         _describe -t incidents 'incidents' incidents
     fi
 }
 
-# Dynamic completion for service IDs  
 _pdctl_service_ids() {
     local -a services
-    if services=(${(f)"$(pdctl --json service list --limit 50 2>/dev/null | jq -r '.[] | "\(.id):\(.name)"' 2>/dev/null)"}); then
+    if services=(${(f)"$(pdctl --json service list --limit 100 2>/dev/null | jq -r '.[] | "\(.id):\(.name)"' 2>/dev/null)"}); then
         _describe -t services 'services' services
     fi
 }
 
-# Dynamic completion for schedule IDs
 _pdctl_schedule_ids() {
     local -a schedules
-    if schedules=(${(f)"$(pdctl --json oncall list --limit 20 2>/dev/null | jq -r '.[].schedule | select(. != null) | "\(.id):\(.summary)"' 2>/dev/null | sort -u)"}); then
+    if schedules=(${(f)"$(pdctl --json schedule list --limit 100 2>/dev/null | jq -r '.[] | "\(.id):\(.name)"' 2>/dev/null)"}); then
         _describe -t schedules 'schedules' schedules
     fi
 }
 
-# Dynamic completion for user IDs (for reassign)
 _pdctl_user_ids() {
     local -a users
-    if users=(${(f)"$(pdctl --json oncall list --limit 50 2>/dev/null | jq -r '.[].user | "\(.id):\(.summary)"' 2>/dev/null | sort -u)"}); then
+    if users=(${(f)"$(pdctl --json user list --limit 100 2>/dev/null | jq -r '.[] | "\(.id):\(.name)"' 2>/dev/null)"}); then
         _describe -t users 'users' users
     fi
+}
+
+_pdctl_escalation_policy_ids() {
+    local -a policies
+    if policies=(${(f)"$(pdctl --json ep list --limit 100 2>/dev/null | jq -r '.[] | "\(.id):\(.name)"' 2>/dev/null)"}); then
+        _describe -t policies 'escalation policies' policies
+    fi
+}
+
+_pdctl_assignee_ids() {
+    local -a assignees
+    local -a users policies
+    if users=(${(f)"$(pdctl --json user list --limit 50 2>/dev/null | jq -r '.[] | "\(.id):user - \(.name)"' 2>/dev/null)"}); then
+        assignees+=("${users[@]}")
+    fi
+    if policies=(${(f)"$(pdctl --json ep list --limit 50 2>/dev/null | jq -r '.[] | "\(.id):policy - \(.name)"' 2>/dev/null)"}); then
+        assignees+=("${policies[@]}")
+    fi
+    _describe -t assignees 'users or escalation policies' assignees
 }
 
 "#;
@@ -60,7 +75,11 @@ _pdctl_user_ids() {
                 )
                 .replace(
                     "'--to=[User ID or escalation policy ID to assign to]:TO:_default'",
-                    "'--to=[User ID or escalation policy ID to assign to]:TO:_pdctl_user_ids'",
+                    "'--to=[User ID or escalation policy ID to assign to]:TO:_pdctl_assignee_ids'",
+                )
+                .replace(
+                    "'*--schedule=[Filter by schedule ID]:SCHEDULE:_default'",
+                    "'*--schedule=[Filter by schedule ID]:SCHEDULE:_pdctl_schedule_ids'",
                 );
 
             let completion =

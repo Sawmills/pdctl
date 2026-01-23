@@ -1,6 +1,6 @@
 use crate::models::{
-    Incident, IncidentsResponse, Note, OnCallsResponse, PagerDutyError, Schedule, ServicesResponse,
-    User,
+    EscalationPoliciesResponse, Incident, IncidentsResponse, Note, OnCallsResponse, PagerDutyError,
+    Schedule, SchedulesResponse, ServicesResponse, User, UsersResponse,
 };
 use reqwest::Client;
 use thiserror::Error;
@@ -216,6 +216,36 @@ impl PagerDutyClient {
         offset: u32,
     ) -> Result<ServicesResponse, PagerDutyClientError> {
         let url = format!("/services?limit={}&offset={}", limit, offset);
+        let resp = self.request(reqwest::Method::GET, &url).send().await?;
+        self.handle_response(resp).await
+    }
+
+    pub async fn list_schedules(
+        &self,
+        limit: u32,
+        offset: u32,
+    ) -> Result<SchedulesResponse, PagerDutyClientError> {
+        let url = format!("/schedules?limit={}&offset={}", limit, offset);
+        let resp = self.request(reqwest::Method::GET, &url).send().await?;
+        self.handle_response(resp).await
+    }
+
+    pub async fn list_users(
+        &self,
+        limit: u32,
+        offset: u32,
+    ) -> Result<UsersResponse, PagerDutyClientError> {
+        let url = format!("/users?limit={}&offset={}", limit, offset);
+        let resp = self.request(reqwest::Method::GET, &url).send().await?;
+        self.handle_response(resp).await
+    }
+
+    pub async fn list_escalation_policies(
+        &self,
+        limit: u32,
+        offset: u32,
+    ) -> Result<EscalationPoliciesResponse, PagerDutyClientError> {
+        let url = format!("/escalation_policies?limit={}&offset={}", limit, offset);
         let resp = self.request(reqwest::Method::GET, &url).send().await?;
         self.handle_response(resp).await
     }

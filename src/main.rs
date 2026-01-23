@@ -47,6 +47,19 @@ pub enum Commands {
         subcommand: ServiceCommands,
     },
 
+    /// Manage users
+    User {
+        #[command(subcommand)]
+        subcommand: UserCommands,
+    },
+
+    /// Manage escalation policies
+    #[command(name = "ep")]
+    EscalationPolicy {
+        #[command(subcommand)]
+        subcommand: EscalationPolicyCommands,
+    },
+
     /// Generate shell completions
     Completion {
         /// Shell to generate completions for
@@ -131,6 +144,12 @@ pub enum OncallCommands {
 
 #[derive(Subcommand)]
 pub enum ScheduleCommands {
+    /// List schedules
+    List {
+        #[arg(short, long, default_value = "25")]
+        limit: u32,
+    },
+
     /// View schedule details
     View {
         /// Schedule ID
@@ -142,13 +161,30 @@ pub enum ScheduleCommands {
 pub enum ServiceCommands {
     /// List services
     List {
-        /// Maximum number of results
         #[arg(short, long, default_value = "25")]
         limit: u32,
     },
 
     /// Show service status summary
     Status,
+}
+
+#[derive(Subcommand)]
+pub enum UserCommands {
+    /// List users
+    List {
+        #[arg(short, long, default_value = "25")]
+        limit: u32,
+    },
+}
+
+#[derive(Subcommand)]
+pub enum EscalationPolicyCommands {
+    /// List escalation policies
+    List {
+        #[arg(short, long, default_value = "25")]
+        limit: u32,
+    },
 }
 
 #[tokio::main]
@@ -180,11 +216,20 @@ async fn main() {
             }
         },
         Commands::Schedule { subcommand } => match subcommand {
+            ScheduleCommands::List { limit } => commands::schedule::list(cli.json, limit).await,
             ScheduleCommands::View { id } => commands::schedule::view(cli.json, &id).await,
         },
         Commands::Service { subcommand } => match subcommand {
             ServiceCommands::List { limit } => commands::service::list(cli.json, limit).await,
             ServiceCommands::Status => commands::service::status(cli.json).await,
+        },
+        Commands::User { subcommand } => match subcommand {
+            UserCommands::List { limit } => commands::user::list(cli.json, limit).await,
+        },
+        Commands::EscalationPolicy { subcommand } => match subcommand {
+            EscalationPolicyCommands::List { limit } => {
+                commands::escalation_policy::list(cli.json, limit).await
+            }
         },
         Commands::Completion { shell } => {
             commands::completion::run(shell);
