@@ -1,6 +1,6 @@
 # pdctl
 
-[![CI](https://github.com/amir-jakoby/pd/actions/workflows/ci.yml/badge.svg)](https://github.com/amir-jakoby/pd/actions/workflows/ci.yml)
+[![CI](https://github.com/sawmills/pdctl/actions/workflows/ci.yml/badge.svg)](https://github.com/sawmills/pdctl/actions/workflows/ci.yml)
 
 `pdctl` is a PagerDuty CLI designed for on-call engineers who need to respond to incidents quickly from their terminal.
 
@@ -9,12 +9,12 @@
 ### Homebrew
 
 ```bash
-brew install amir-jakoby/tap/pdctl
+brew install sawmills/tap/pdctl
 ```
 
 ### Manual Installation
 
-Download the latest binary for your platform from the [Releases](https://github.com/amir-jakoby/pd/releases) page.
+Download the latest binary for your platform from the [Releases](https://github.com/sawmills/pdctl/releases) page.
 
 1. Extract the archive.
 2. Move the `pdctl` binary to a directory in your `PATH` (e.g., `/usr/local/bin`).
