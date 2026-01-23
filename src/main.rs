@@ -3,7 +3,7 @@ mod commands;
 mod models;
 mod table;
 
-use clap::{Parser, Subcommand};
+use clap::{ArgAction, Parser, Subcommand};
 use clap_complete::Shell;
 
 #[derive(Parser)]
@@ -72,16 +72,13 @@ pub enum Commands {
 pub enum IncidentCommands {
     /// List incidents
     List {
-        /// Filter by status
-        #[arg(long, value_parser = ["triggered", "acknowledged", "resolved"])]
+        #[arg(long, value_parser = ["triggered", "acknowledged", "resolved"], action = ArgAction::Append)]
         status: Option<Vec<String>>,
 
-        /// Filter by service ID
-        #[arg(long)]
+        #[arg(long, action = ArgAction::Append)]
         service: Option<Vec<String>>,
 
-        /// Filter by urgency
-        #[arg(long, value_parser = ["high", "low"])]
+        #[arg(long, value_parser = ["high", "low"], action = ArgAction::Append)]
         urgency: Option<Vec<String>>,
 
         /// Maximum number of results
