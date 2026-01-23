@@ -59,16 +59,16 @@ pub enum Commands {
 pub enum IncidentCommands {
     /// List incidents
     List {
-        /// Filter by status (triggered, acknowledged, resolved)
-        #[arg(long)]
+        /// Filter by status
+        #[arg(long, value_parser = ["triggered", "acknowledged", "resolved"])]
         status: Option<Vec<String>>,
 
         /// Filter by service ID
         #[arg(long)]
         service: Option<Vec<String>>,
 
-        /// Filter by urgency (high, low)
-        #[arg(long)]
+        /// Filter by urgency
+        #[arg(long, value_parser = ["high", "low"])]
         urgency: Option<Vec<String>>,
 
         /// Maximum number of results
