@@ -1,0 +1,32 @@
+version: 0.1
+cli:
+  version: 1.25.0
+plugins:
+  sources:
+    - id: trunk
+      ref: v1.7.4
+      uri: https://github.com/trunk-io/plugins
+runtimes:
+  enabled:
+    - node@22.16.0
+    - python@3.10.8
+lint:
+  enabled:
+    - actionlint@1.7.10
+    - clippy@1.92.0
+    - git-diff-check
+    - osv-scanner@2.3.2
+    - prettier@3.8.0
+    - rustfmt@1.92.0
+    - taplo@0.10.0
+    - trufflehog@3.92.4
+  disabled:
+    - checkov
+    - yamllint
+  ignore:
+    - linters: [prettier]
+      paths:
+        - CHANGELOG.md
+actions:
+  enabled:
+    - trunk-upgrade-available
