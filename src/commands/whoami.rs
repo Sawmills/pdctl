@@ -1,6 +1,6 @@
 use crate::client::PagerDutyClient;
+use crate::table;
 use anyhow::Result;
-use comfy_table::{presets::UTF8_FULL, Table};
 
 pub async fn run(json: bool) -> Result<()> {
     let client = PagerDutyClient::new()?;
@@ -9,8 +9,7 @@ pub async fn run(json: bool) -> Result<()> {
     if json {
         println!("{}", serde_json::to_string_pretty(&user)?);
     } else {
-        let mut table = Table::new();
-        table.load_preset(UTF8_FULL);
+        let mut table = table::new();
         table.set_header(vec!["Field", "Value"]);
         table.add_row(vec!["ID", &user.id]);
         table.add_row(vec!["Name", &user.name]);

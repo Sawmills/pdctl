@@ -1,7 +1,7 @@
 use crate::client::PagerDutyClient;
 use crate::models::Schedule;
+use crate::table;
 use anyhow::Result;
-use comfy_table::{presets::UTF8_FULL, Table};
 
 pub async fn view(json: bool, id: &str) -> Result<()> {
     let client = PagerDutyClient::new()?;
@@ -17,8 +17,7 @@ pub async fn view(json: bool, id: &str) -> Result<()> {
 }
 
 fn print_schedule_details(schedule: &Schedule) {
-    let mut table = Table::new();
-    table.load_preset(UTF8_FULL);
+    let mut table = table::new();
     table.set_header(vec!["Field", "Value"]);
 
     table.add_row(vec!["ID", &schedule.id]);
@@ -33,8 +32,7 @@ fn print_schedule_details(schedule: &Schedule) {
 
     if !schedule.schedule_layers.is_empty() {
         println!("\nSchedule Layers:");
-        let mut layers_table = Table::new();
-        layers_table.load_preset(UTF8_FULL);
+        let mut layers_table = table::new();
         layers_table.set_header(vec!["Layer", "Start", "End", "Users"]);
 
         for layer in &schedule.schedule_layers {
@@ -55,8 +53,7 @@ fn print_schedule_details(schedule: &Schedule) {
     if let Some(final_schedule) = &schedule.final_schedule {
         if !final_schedule.rendered_schedule_entries.is_empty() {
             println!("\nCurrent Rotation:");
-            let mut rotation_table = Table::new();
-            rotation_table.load_preset(UTF8_FULL);
+            let mut rotation_table = table::new();
             rotation_table.set_header(vec!["User", "Start", "End"]);
 
             for entry in &final_schedule.rendered_schedule_entries {

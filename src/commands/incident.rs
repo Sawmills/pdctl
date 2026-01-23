@@ -1,7 +1,7 @@
 use crate::client::PagerDutyClient;
 use crate::models::Incident;
+use crate::table;
 use anyhow::Result;
-use comfy_table::{presets::UTF8_FULL, Table};
 
 pub async fn list(
     json: bool,
@@ -48,8 +48,7 @@ fn print_incidents_table(incidents: &[Incident]) {
         return;
     }
 
-    let mut table = Table::new();
-    table.load_preset(UTF8_FULL);
+    let mut table = table::new();
     table.set_header(vec![
         "ID", "Status", "Urgency", "Service", "Title", "Updated",
     ]);
@@ -91,8 +90,7 @@ pub async fn view(json: bool, id: &str) -> Result<()> {
     if json {
         println!("{}", serde_json::to_string_pretty(&incident)?);
     } else {
-        let mut table = Table::new();
-        table.load_preset(UTF8_FULL);
+        let mut table = table::new();
         table.set_header(vec!["Field", "Value"]);
         table.add_row(vec!["ID", &incident.id]);
         table.add_row(vec!["Number", &incident.incident_number.to_string()]);

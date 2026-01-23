@@ -1,6 +1,7 @@
 mod client;
 mod commands;
 mod models;
+mod table;
 
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;

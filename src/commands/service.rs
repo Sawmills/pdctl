@@ -1,7 +1,7 @@
 use crate::client::PagerDutyClient;
 use crate::models::Service;
+use crate::table;
 use anyhow::Result;
-use comfy_table::{presets::UTF8_FULL, Table};
 
 pub async fn list(json: bool, limit: u32) -> Result<()> {
     let client = PagerDutyClient::new()?;
@@ -22,8 +22,7 @@ fn print_services_table(services: &[Service]) {
         return;
     }
 
-    let mut table = Table::new();
-    table.load_preset(UTF8_FULL);
+    let mut table = table::new();
     table.set_header(vec!["ID", "Name", "Status"]);
 
     for service in services {
