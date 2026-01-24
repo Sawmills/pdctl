@@ -205,12 +205,17 @@ impl PagerDutyClient {
 
     // Schedule endpoints
     pub async fn get_schedule(&self, id: &str) -> Result<Schedule, PagerDutyClientError> {
+        let now = chrono::Utc::now();
+        let until = now + chrono::Duration::days(7);
+        let since = now.format("%Y-%m-%dT%H:%M:%SZ");
+        let until = until.format("%Y-%m-%dT%H:%M:%SZ");
+
         let resp = self
             .request(
                 reqwest::Method::GET,
                 &format!(
-                    "/schedules/{}?include[]=schedule_layers&include[]=users",
-                    id
+                    "/schedules/{}?include[]=schedule_layers&include[]=users&since={}&until={}",
+                    id, since, until
                 ),
             )
             .send()
