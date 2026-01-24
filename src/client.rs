@@ -122,7 +122,10 @@ impl PagerDutyClient {
 
     pub async fn get_incident(&self, id: &str) -> Result<Incident, PagerDutyClientError> {
         let resp = self
-            .request(reqwest::Method::GET, &format!("/incidents/{}", id))
+            .request(
+                reqwest::Method::GET,
+                &format!("/incidents/{}?include[]=body", id),
+            )
             .send()
             .await?;
         let wrapper: IncidentResponse = self.handle_response(resp).await?;

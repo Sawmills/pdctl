@@ -41,6 +41,8 @@ pub struct Incident {
     pub created_at: String,
     #[serde(default)]
     pub last_status_change_at: Option<String>,
+    #[serde(default)]
+    pub body: Option<IncidentBody>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -66,6 +68,12 @@ pub struct Assignee {
     pub id: String,
     #[serde(default)]
     pub summary: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct IncidentBody {
+    #[serde(default)]
+    pub details: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Deserialize)]

@@ -144,9 +144,52 @@ pub async fn view(json: bool, id: &str) -> Result<()> {
         table.add_row(vec!["Assignees", &assignees_str]);
 
         println!("{table}");
+
+        if let Some(body) = &incident.body {
+            if let Some(details) = &body.details {
+                println!("\nCustom Details:");
+                print_custom_details(details, 0);
+            }
+        }
     }
 
     Ok(())
+}
+
+fn print_custom_details(value: &serde_json::Value, indent: usize) {
+    let prefix = "  ".repeat(indent);
+    match value {
+        serde_json::Value::Object(map) => {
+            for (key, val) in map {
+                match val {
+                    serde_json::Value::Object(_) => {
+                        println!("{}{}: ", prefix, key);
+                        print_custom_details(val, indent + 1);
+                    }
+                    serde_json::Value::Array(arr) => {
+                        println!("{}{}: ", prefix, key);
+                        for item in arr {
+                            print_custom_details(item, indent + 1);
+                        }
+                    }
+                    serde_json::Value::String(s) if !s.is_empty() => {
+                        println!("{}  {}: {}", prefix, key, s);
+                    }
+                    serde_json::Value::Number(n) => {
+                        println!("{}  {}: {}", prefix, key, n);
+                    }
+                    serde_json::Value::Bool(b) => {
+                        println!("{}  {}: {}", prefix, key, b);
+                    }
+                    _ => {}
+                }
+            }
+        }
+        serde_json::Value::String(s) if !s.is_empty() => {
+            println!("{}- {}", prefix, s);
+        }
+        _ => {}
+    }
 }
 
 pub async fn ack(json: bool, id: &str) -> Result<()> {
