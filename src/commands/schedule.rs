@@ -2,6 +2,17 @@ use crate::client::PagerDutyClient;
 use crate::models::{Schedule, ScheduleSummary};
 use crate::table;
 use anyhow::Result;
+use chrono::{DateTime, Local};
+
+fn format_datetime(iso: &str) -> String {
+    DateTime::parse_from_rfc3339(iso)
+        .map(|dt| {
+            dt.with_timezone(&Local)
+                .format("%a %b %d %I:%M%p")
+                .to_string()
+        })
+        .unwrap_or_else(|_| iso.to_string())
+}
 
 pub async fn list(json: bool, limit: u32) -> Result<()> {
     let client = PagerDutyClient::new()?;
@@ -88,12 +99,14 @@ fn print_schedule_details(schedule: &Schedule) {
                 .collect();
             let users_str = users.join(", ");
 
-            layers_table.add_row(vec![
-                &layer.name,
-                &layer.start,
-                layer.end.as_deref().unwrap_or("N/A"),
-                &users_str,
-            ]);
+            let start = format_datetime(&layer.start);
+            let end = layer
+                .end
+                .as_ref()
+                .map(|e| format_datetime(e))
+                .unwrap_or_else(|| "Ongoing".to_string());
+
+            layers_table.add_row(vec![&layer.name, &start, &end, &users_str]);
         }
 
         println!("{layers_table}");
@@ -112,7 +125,9 @@ fn print_schedule_details(schedule: &Schedule) {
                     .as_deref()
                     .or(entry.user.summary.as_deref())
                     .unwrap_or(&entry.user.id);
-                rotation_table.add_row(vec![user_name, &entry.start, &entry.end]);
+                let start = format_datetime(&entry.start);
+                let end = format_datetime(&entry.end);
+                rotation_table.add_row(vec![user_name, &start, &end]);
             }
 
             println!("{rotation_table}");
