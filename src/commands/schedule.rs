@@ -7,9 +7,16 @@ use chrono::{DateTime, Local};
 fn format_datetime(iso: &str) -> String {
     DateTime::parse_from_rfc3339(iso)
         .map(|dt| {
-            dt.with_timezone(&Local)
-                .format("%a %b %d %I:%M%p")
-                .to_string()
+            let local = dt.with_timezone(&Local);
+            let tz_abbrev = match local.format("%Z").to_string().as_str() {
+                "-08:00" => "PST",
+                "-07:00" => "PDT",
+                "+02:00" => "IST",
+                "+03:00" => "IDT",
+                "+00:00" => "UTC",
+                other => return format!("{} {}", local.format("%a %b %d %I:%M%p"), other),
+            };
+            format!("{} {}", local.format("%a %b %d %I:%M%p"), tz_abbrev)
         })
         .unwrap_or_else(|_| iso.to_string())
 }
@@ -114,7 +121,7 @@ fn print_schedule_details(schedule: &Schedule) {
 
     if let Some(final_schedule) = &schedule.final_schedule {
         if !final_schedule.rendered_schedule_entries.is_empty() {
-            println!("\nCurrent Rotation:");
+            println!("\nCurrent Rotation (times shown in your local timezone):");
             let mut rotation_table = table::new();
             rotation_table.set_header(vec!["User", "Start", "End"]);
 
