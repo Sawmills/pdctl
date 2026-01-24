@@ -17,12 +17,18 @@ pub struct ErrorDetail {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct User {
     pub id: String,
-    pub name: String,
-    pub email: String,
+    #[serde(default)]
+    pub name: Option<String>,
+    #[serde(default)]
+    pub email: Option<String>,
+    #[serde(default)]
+    pub summary: Option<String>,
     #[serde(default)]
     pub time_zone: Option<String>,
     #[serde(default)]
     pub role: Option<String>,
+    #[serde(default)]
+    pub deleted_at: Option<String>,
 }
 
 // Incident

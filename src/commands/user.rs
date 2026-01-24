@@ -28,8 +28,8 @@ fn print_user_list(users: &[User]) {
     for user in users {
         table.add_row(vec![
             &user.id,
-            &user.name,
-            &user.email,
+            user.name.as_deref().unwrap_or("N/A"),
+            user.email.as_deref().unwrap_or("N/A"),
             user.role.as_deref().unwrap_or("N/A"),
         ]);
     }

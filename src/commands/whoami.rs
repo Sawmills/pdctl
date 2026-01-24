@@ -12,8 +12,8 @@ pub async fn run(json: bool) -> Result<()> {
         let mut table = table::new();
         table.set_header(vec!["Field", "Value"]);
         table.add_row(vec!["ID", &user.id]);
-        table.add_row(vec!["Name", &user.name]);
-        table.add_row(vec!["Email", &user.email]);
+        table.add_row(vec!["Name", user.name.as_deref().unwrap_or("N/A")]);
+        table.add_row(vec!["Email", user.email.as_deref().unwrap_or("N/A")]);
         table.add_row(vec!["Role", user.role.as_deref().unwrap_or("N/A")]);
         table.add_row(vec!["Timezone", user.time_zone.as_deref().unwrap_or("N/A")]);
         println!("{table}");

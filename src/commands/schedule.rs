@@ -77,7 +77,15 @@ fn print_schedule_details(schedule: &Schedule) {
         layers_table.set_header(vec!["Layer", "Start", "End", "Users"]);
 
         for layer in &schedule.schedule_layers {
-            let users: Vec<String> = layer.users.iter().map(|u| u.user.name.clone()).collect();
+            let users: Vec<String> = layer
+                .users
+                .iter()
+                .map(|u| {
+                    u.user.name.clone().unwrap_or_else(|| {
+                        u.user.summary.clone().unwrap_or_else(|| u.user.id.clone())
+                    })
+                })
+                .collect();
             let users_str = users.join(", ");
 
             layers_table.add_row(vec![
@@ -98,7 +106,13 @@ fn print_schedule_details(schedule: &Schedule) {
             rotation_table.set_header(vec!["User", "Start", "End"]);
 
             for entry in &final_schedule.rendered_schedule_entries {
-                rotation_table.add_row(vec![&entry.user.name, &entry.start, &entry.end]);
+                let user_name = entry
+                    .user
+                    .name
+                    .as_deref()
+                    .or(entry.user.summary.as_deref())
+                    .unwrap_or(&entry.user.id);
+                rotation_table.add_row(vec![user_name, &entry.start, &entry.end]);
             }
 
             println!("{rotation_table}");
