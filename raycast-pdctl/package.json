@@ -1,0 +1,71 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "pagerduty",
+  "version": "0.1.0",
+  "title": "PagerDuty",
+  "description": "Manage PagerDuty incidents directly from Raycast",
+  "icon": "icon.png",
+  "author": "sawmills",
+  "categories": ["Developer Tools"],
+  "license": "MIT",
+  "preferences": [
+    {
+      "name": "apiToken",
+      "title": "PagerDuty API Token",
+      "description": "Your PagerDuty API token (get it from https://support.pagerduty.com/docs/api-access-keys)",
+      "type": "password",
+      "required": true
+    },
+    {
+      "name": "subdomain",
+      "title": "PagerDuty Subdomain",
+      "description": "Your PagerDuty subdomain (e.g., 'mycompany' for mycompany.pagerduty.com)",
+      "type": "textfield",
+      "required": true,
+      "default": "sawmills"
+    }
+  ],
+  "commands": [
+    {
+      "name": "list-incidents",
+      "title": "List Incidents",
+      "subtitle": "PagerDuty",
+      "description": "Search and manage PagerDuty incidents",
+      "mode": "view"
+    },
+    {
+      "name": "oncall-status",
+      "title": "On-Call Status",
+      "subtitle": "PagerDuty",
+      "description": "View current on-call schedules",
+      "mode": "view"
+    },
+    {
+      "name": "menu-bar",
+      "title": "Incident Status",
+      "subtitle": "PagerDuty",
+      "description": "Show active incident count in menu bar",
+      "mode": "menu-bar",
+      "interval": "1m"
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^1.87.0",
+    "@raycast/utils": "^1.4.7",
+    "node-fetch": "^3.2.10"
+  },
+  "devDependencies": {
+    "@raycast/eslint-config": "^1.0.6",
+    "@types/node": "18.18.4",
+    "@types/react": "19.0.10",
+    "eslint": "^8.51.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "build": "ray build -e dist",
+    "dev": "ray develop",
+    "fix-lint": "ray lint --fix",
+    "lint": "ray lint"
+  }
+}

@@ -42,8 +42,9 @@ pdctl [--json] <command>
 
 #### Incidents
 - `pdctl incident list`: List incidents.
-  - Options: `--status`, `--service`, `--urgency`, `--limit`.
+  - Options: `--status`, `--service`, `--urgency`, `--limit`, `--since`, `--until`.
   - Example: `pdctl incident list --status triggered,acknowledged --urgency high`
+  - Example with time range: `pdctl incident list --since 2024-01-01 --until 2024-01-31`
 - `pdctl incident view <id>`: View incident details.
 - `pdctl incident ack <id>`: Acknowledge an incident.
 - `pdctl incident resolve <id>`: Resolve an incident.
@@ -103,3 +104,30 @@ With Zsh completions installed, you can tab-complete:
 - Service IDs: `pdctl incident list --service=<TAB>` shows available services  
 - Schedule IDs: `pdctl schedule view <TAB>` or `pdctl oncall list --schedule=<TAB>`
 - User/Policy IDs: `pdctl incident reassign <id> --to=<TAB>` shows users and escalation policies
+
+## Raycast Extension
+
+A companion Raycast extension is available for quick incident management from your menu bar.
+
+### Features
+
+- **List Incidents**: Search and filter incidents by status, urgency, and service
+- **Quick Actions**: Acknowledge, resolve, add notes, and reassign incidents
+- **On-Call Status**: View current on-call schedules
+- **Menu Bar Widget**: See active incident count at a glance with quick actions
+
+### Installation
+
+The Raycast extension is included in the `raycast-pdctl/` directory.
+
+```bash
+cd raycast-pdctl
+npm install
+npm run dev
+```
+
+This registers the extension with Raycast. You'll be prompted to configure your PagerDuty subdomain on first use.
+
+### Configuration
+
+The extension uses the same `PAGERDUTY_TOKEN` environment variable as the CLI. Make sure it's set in your shell profile so Raycast can access it.

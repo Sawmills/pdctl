@@ -9,10 +9,11 @@ pub async fn list(
     service: Option<Vec<String>>,
     urgency: Option<Vec<String>>,
     limit: u32,
+    since: Option<String>,
+    until: Option<String>,
 ) -> Result<()> {
     let client = PagerDutyClient::new()?;
 
-    // Convert Option<Vec<String>> to Option<&[&str]> for the client
     let status_refs: Option<Vec<&str>> = status
         .as_ref()
         .map(|v| v.iter().map(|s| s.as_str()).collect());
@@ -30,6 +31,8 @@ pub async fn list(
             urgency_refs.as_deref(),
             limit,
             0,
+            since.as_deref(),
+            until.as_deref(),
         )
         .await?;
 

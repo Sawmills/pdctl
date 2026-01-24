@@ -84,6 +84,14 @@ pub enum IncidentCommands {
         /// Maximum number of results
         #[arg(short, long, default_value = "25")]
         limit: u32,
+
+        /// Start of date range (ISO 8601, e.g. 2024-01-01 or 2024-01-01T00:00:00Z)
+        #[arg(long)]
+        since: Option<String>,
+
+        /// End of date range (ISO 8601, e.g. 2024-01-31 or 2024-01-31T23:59:59Z)
+        #[arg(long)]
+        until: Option<String>,
     },
 
     /// View incident details
@@ -196,7 +204,12 @@ async fn main() {
                 service,
                 urgency,
                 limit,
-            } => commands::incident::list(cli.json, status, service, urgency, limit).await,
+                since,
+                until,
+            } => {
+                commands::incident::list(cli.json, status, service, urgency, limit, since, until)
+                    .await
+            }
             IncidentCommands::View { id } => commands::incident::view(cli.json, &id).await,
             IncidentCommands::Ack { id } => commands::incident::ack(cli.json, &id).await,
             IncidentCommands::Resolve { id } => commands::incident::resolve(cli.json, &id).await,

@@ -82,7 +82,6 @@ impl PagerDutyClient {
         Ok(wrapper.user)
     }
 
-    // Incident endpoints
     pub async fn list_incidents(
         &self,
         statuses: Option<&[&str]>,
@@ -90,6 +89,8 @@ impl PagerDutyClient {
         urgencies: Option<&[&str]>,
         limit: u32,
         offset: u32,
+        since: Option<&str>,
+        until: Option<&str>,
     ) -> Result<IncidentsResponse, PagerDutyClientError> {
         let mut url = format!("/incidents?limit={}&offset={}", limit, offset);
 
@@ -107,6 +108,12 @@ impl PagerDutyClient {
             for urgency in u {
                 url.push_str(&format!("&urgencies[]={}", urgency));
             }
+        }
+        if let Some(s) = since {
+            url.push_str(&format!("&since={}", s));
+        }
+        if let Some(u) = until {
+            url.push_str(&format!("&until={}", u));
         }
 
         let resp = self.request(reqwest::Method::GET, &url).send().await?;

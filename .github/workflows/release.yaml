@@ -33,10 +33,23 @@ jobs:
       - name: Build
         run: cargo build --release --target ${{ matrix.target }}
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Raycast extension
+        run: |
+          cd raycast-pdctl
+          npm ci
+          npm run build
+
       - name: Create tarball
         run: |
           mkdir -p pdctl-${{ matrix.target }}
           cp target/${{ matrix.target }}/release/pdctl pdctl-${{ matrix.target }}/
+          cp -r raycast-pdctl pdctl-${{ matrix.target }}/
+          rm -rf pdctl-${{ matrix.target }}/raycast-pdctl/node_modules
           tar czf pdctl-${{ matrix.target }}.tar.gz pdctl-${{ matrix.target }}/
           ls -lh pdctl-${{ matrix.target }}.tar.gz
 
