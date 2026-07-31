@@ -26,4 +26,6 @@ jobs:
 
       - name: Run trunk check
         if: hashFiles('.trunk/trunk.yaml') != ''
-        run: trunk check
+        uses: trunk-io/trunk-action@04ba50e7658c81db7356da96657e6e77f220bfa3 # v1
+        with:
+          cache: false
