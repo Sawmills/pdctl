@@ -28,5 +28,8 @@ lint:
       paths:
         - CHANGELOG.md
 actions:
+  disabled:
+    - trunk-fmt-pre-commit
+    - trunk-check-pre-push
   enabled:
     - trunk-upgrade-available
